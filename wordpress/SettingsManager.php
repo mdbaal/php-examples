@@ -184,10 +184,9 @@
 		{
 			$scheduledTime = get_option("plugin_cron_time");
 			
-			// If action has not been scheduled yet
 			if (!wp_next_scheduled('cron_plugin_get_open_orders')) {
 				wp_schedule_event($scheduledTime, 'daily', 'cron_plugin_get_open_orders');
-			} // If action has to be rescheduled
+			}
 			else {
 				$currentScheduled = wp_next_scheduled('cron_plugin_get_open_orders');
 				wp_unschedule_event($currentScheduled, 'cron_plugin_get_open_orders');
