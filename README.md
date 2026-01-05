@@ -12,4 +12,4 @@ Onder de wordpress map staan de volgende snippets.
 - <b>ApiCalls</b> - Verbinding maken met externe api's
 - <b>ExternalOrder</b> - Class die externe bestellingen van een api call omzet naar WooCommerce bestellingen
 - <b>PluginBase</b> - Basis class voor een wordpress plugin. Deze wordt als eerste aangeroepen na de plugin_hook
-- <b>PluginSettings</b> - Renderd settings en beheert het laden en opslaan daarvan.
+- <b>SettingsManager</b> - Renderd settings en beheert het laden en opslaan daarvan.
