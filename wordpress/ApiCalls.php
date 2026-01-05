@@ -1,26 +1,24 @@
 <?php
 	class ApiCalls
 	{
-		public static function apiGetProcessStatus($processId)
+		public static function getProcessStatus($processId)
 		{
 			$headers = [
 				'Accept' => 'application/vnd.retailer.v10+json',
 				'Content-Type' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('GET', 'shared/process-status/' . $processId, $headers);
+			return self::apiCall('GET', 'shared/process-status/' . $processId, $headers);
 		}
 		
-		private static function apiCallPlugin(string $method, string $endpoint, array $headers, string $body = '', array $queries = null, bool $ignoreDemoMode = false): PluginResponse|false
+		private static function apiCall(string $method, string $endpoint, array $headers, string $body = '', array $queries = null, bool $ignoreDemoMode = false): PluginResponse|false
 		{
 			if (!self::canRequest()) return new PluginResponse(false);
-			// Remove '/' from start of $endpoint
 			if (str_starts_with($endpoint, '/'))
 				$endpoint = substr($endpoint, 1);
 			
 			$headers['Authorization'] = 'Bearer ' . self::getToken();
 			
-			// If in demo mode replace normal endpoints with the demo endpoints
 			if (defined('PLUGIN_DEMO_MODE') && !$ignoreDemoMode) {
 				if (PLUGIN_DEMO_MODE) {
 					$endpoint = str_replace('retailer', 'retailer-demo', $endpoint);
@@ -30,18 +28,17 @@
 			
 			$pluginUrl = 'https://apicall.com/' . $endpoint;
 			
-			// Add Queries
 			if (isset($queries)) {
 				$pluginUrl .= '?';
 				foreach ($queries as $query) {
 					$pluginUrl .= $query;
-					//If not the last one
+					
 					if ($query !== $queries[array_key_last($queries)])
 						$pluginUrl .= '&';
 				}
 			}
 			
-			// Make the actual request
+
 			$response = wp_remote_request($pluginUrl, array(
 				'method' => strtoupper($method),
 				'headers' => $headers,
@@ -57,7 +54,6 @@
 		
 		private static function canRequest()
 		{
-			// Get the option or return true if option does not exist yet
 			if (time() > get_option('plugin_rate_reset')) {
 				update_option('plugin_can_request', true);
 				return true;
@@ -109,61 +105,60 @@
 			}
 		}
 		
-		public static function apiUploadProductOffer($offer)
+		public static function uploadProductOffer($offer)
 		{
 			$headers = [
 				'Accept' => 'application/vnd.retailer.v10+json',
 				'Content-Type' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('POST', 'retailer/offers', $headers, $offer);
+			return self::apiCall('POST', 'retailer/offers', $headers, $offer);
 		}
 		
-		public static function apiUploadProductContent($content)
+		public static function uploadProductContent($content)
 		{
 			$headers = [
 				'Accept' => 'application/vnd.retailer.v10+json',
 				'Content-Type' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('POST', 'retailer/content/products', $headers, $content, null);
+			return self::apiCall('POST', 'retailer/content/products', $headers, $content, null);
 		}
 		
-		public static function apiRemoveProduct($offerId)
+		public static function removeProduct($offerId)
 		{
 			$headers = [
 				'Content-Type' => 'application/vnd.retailer.v10+json',
 				'Accept' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('DELETE', 'retailer/offers/' . $offerId, $headers);
+			return self::apiCall('DELETE', 'retailer/offers/' . $offerId, $headers);
 		}
 		
-		public static function apiGetOpenOrders()
+		public static function getOpenOrders()
 		{
 			$headers = [
 				'Content-Type' => 'application/vnd.retailer.v10+json',
 				'Accept' => 'application/vnd.retailer.v10+json'
 			];
 			
-			$response = self::apiCallPlugin('GET', 'retailer/orders', $headers, '', ['status=OPEN']);
+			$response = self::apiCall('GET', 'retailer/orders', $headers, '', ['status=OPEN']);
 			
-			// If there are no orders return an empty list
 			return $response->dictionaryFromBody()['orders'] ?? [];
 		}
 		
-		public static function apiGetSpecificOrder($orderId)
+		public static function getSpecificOrder($orderId)
 		{
 			$headers = [
 				'Content-Type' => 'application/vnd.retailer.v10+json',
 				'Accept' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('GET', 'retailer/orders/' . $orderId, $headers);
+			return self::apiCall('GET', 'retailer/orders/' . $orderId, $headers);
 		}
 		
 		
-		public static function apiConfirmShipment($orderItemPluginId, $orderId, $transportCompany, $trackAndTrace)
+		public static function confirmShipment($orderItemPluginId, $orderId, $transportCompany, $trackAndTrace)
 		{
 			switch ($transportCompany) {
 				case "transporter":
@@ -186,18 +181,18 @@
 				'Accept' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('POST', 'retailer/shipments', $headers, $body);
+			return self::apiCall('POST', 'retailer/shipments', $headers, $body);
 		}
 		
 		
-		public static function apiGetCommission($ean, $price)
+		public static function getCommission($ean, $price)
 		{
 			$headers = [
 				'Content-Type' => 'application/vnd.retailer.v10+json',
 				'Accept' => 'application/vnd.retailer.v10+json'
 			];
 			
-			$response = self::apiCallPlugin('GET', 'retailer/commission/' . $ean, $headers, '', ['unit-price=' . $price], true);
+			$response = self::apiCall('GET', 'retailer/commission/' . $ean, $headers, '', ['unit-price=' . $price], true);
 			
 			
 			if ($response->callWasSuccess()) {
@@ -208,7 +203,7 @@
 			return 0;
 		}
 		
-		public static function apiGetChunkRecommendation(string $requestJson)
+		public static function getChunkRecommendation(string $requestJson)
 		{
 			if (!isset($requestJson) || $requestJson === '') return false;
 			
@@ -217,10 +212,10 @@
 				'Content-Type' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('POST', 'retailer/content/chunk-recommendations', $headers, $requestJson, null, true);
+			return self::apiCall('POST', 'retailer/content/chunk-recommendations', $headers, $requestJson, null, true);
 		}
 		
-		public static function apiUpdateOffer($offerId, $data)
+		public static function updateOffer($offerId, $data)
 		{
 			if (!isset($offerId, $data)) return false;
 			
@@ -229,10 +224,10 @@
 				'Content-Type' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('PUT', 'retailer/offers/' . $offerId, $headers, $data, null, true);
+			return self::apiCall('PUT', 'retailer/offers/' . $offerId, $headers, $data, null, true);
 		}
 		
-		public static function apiUpdateOfferPrice($offerId, $data)
+		public static function updateOfferPrice($offerId, $data)
 		{
 			if (!isset($offerId, $data)) return false;
 			
@@ -241,10 +236,10 @@
 				'Content-Type' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('PUT', 'retailer/offers/' . $offerId . '/price', $headers, $data, null, true);
+			return self::apiCall('PUT', 'retailer/offers/' . $offerId . '/price', $headers, $data, null, true);
 		}
 		
-		public static function apiUpdateOfferStock($offerId, $data)
+		public static function updateOfferStock($offerId, $data)
 		{
 			if (!isset($offerId, $data)) return false;
 			
@@ -253,6 +248,6 @@
 				'Content-Type' => 'application/vnd.retailer.v10+json'
 			];
 			
-			return self::apiCallPlugin('PUT', 'retailer/offers/' . $offerId . '/stock', $headers, $data, null, true);
+			return self::apiCall('PUT', 'retailer/offers/' . $offerId . '/stock', $headers, $data, null, true);
 		}
 	}
