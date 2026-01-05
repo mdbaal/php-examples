@@ -1,10 +1,7 @@
 # php-examples
 Deze repository dient als voorbeeld van mijn manier van programmeren. 
 
-De code bestaat uit snippets van werken met Wordpress/WooCommerce en Laravel en zal waar nodig geüpdate worden.
-
-<b>Code bevat snippets en is niet functioneel op zichzelf </b>
-
+De code is wat algemener gemaakt en opgeschoond. De code is van werken met Wordpress/WooCommerce en Laravel(komt nog) en zal waar nodig geüpdate worden.
 
 ## Wordpress Snippets
 Onder de wordpress map staan de volgende snippets.
