@@ -20,3 +20,5 @@ De SettingsManager zou ik de html nog scheiden van de class en het inrichten als
 Voor de PluginBase zou ik nog kijken of er een betere structuur mogelijk is en mogelijk een handler voor het laden van de resources. Plus het het gebruik van caching om niet elke keer alle resources opnieuw te laden.1
 
 
+## Symfony
+Symfony 7 leren door het volgen van <a href="https://symfonycasts.com/screencast/symfony/setup">deze</a> tutorial.
