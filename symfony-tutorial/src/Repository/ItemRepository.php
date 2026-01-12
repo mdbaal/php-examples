@@ -21,4 +21,15 @@ class ItemRepository
             new Item('Eggbert', '$2000'),
         ];
     }
+
+    public function find(string $name): ?Item
+    {
+        foreach ($this->getAll() as $item) {
+            if ($item->getName() == $name) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
 }
