@@ -21,12 +21,6 @@ class ApiController extends AbstractController
     #[Route('/items/{name}', methods: ['GET'])]
     public function get(string $name, ItemRepository $repository): Response
     {
-        $item = $repository->find($name);
-
-        if (!$item) {
-            throw $this->createNotFoundException('No item with that name found');
-        }
-
-        return $this->json($item);
+        return '';
     }
 }
