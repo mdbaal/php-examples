@@ -10,9 +10,7 @@
     <h2>Repository has {{ itemCount }} items</h2>
 
     {% for item in items %}
-        <span><a href="{{ path('app_item_show',{ name: item.name}) }}">{{ item.name }}</a></span>
-        <span>{{ item.price }}</span>
-        <br>
+        {{ include('partials/_item.html.twig') }}
     {% endfor %}
 
 {% endblock %}
